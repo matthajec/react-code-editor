@@ -1,6 +1,6 @@
 # React Code Editor
 
-A simple HTML, CSS, and Javascript editor that can be used to render a working document.
+A simple HTML, CSS, and Javascript editor that can be used to create a working document.
 
 ## How to use
 
