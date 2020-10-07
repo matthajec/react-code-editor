@@ -1,30 +1,59 @@
 import React, { useState, useEffect } from 'react'
+import FileSaver, { saveAs } from 'file-saver'
+
 import Editor from './components/Editor'
 import NavBtn from './components/NavBtn'
 
+
 export default function App() {
 
-    const [ html, setHTML ] = useState(`<h1 class="count">0</h1>
-<button class="increment">Increment</button>`)
-    const [ css, setCSS ] = useState(`body {
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
-}
-
-button {
-    cursor: pointer;
-}`)
-    const [ js, setJS ] = useState(`const btn = document.querySelector(".increment")
-const count = document.querySelector(".count")
-
-btn.addEventListener('click', () => {
-    count.textContent++
-})`)
+    const [ html, setHTML ] = useState('')
+    const [ css, setCSS ] = useState('')
+    const [ js, setJS ] = useState('')
     const [ tabIndex, setTabIndex ] = useState(0)
+    const [ srcDoc, setSrcDoc ] = useState(``)
+
+    useEffect(() => {
+        setHTML(localStorage.getItem('html'))
+        setCSS(localStorage.getItem('css'))
+        setJS(localStorage.getItem('js'))
+    }, [])
+
+    useEffect(() => {
+        localStorage.setItem("html", html)
+        localStorage.setItem("css", css)
+        localStorage.setItem("js", js)
+    }, [ html, css, js ])
+
+    function updateEditor() {
+        setSrcDoc(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Document</title>
+            <style>
+                ${css}
+            </style>
+        </head>
+        <body>
+
+            ${html}
+
+            <script>
+                ${js}
+            </script>
+        </body>
+        </html>
+    `)
+    }
+
+    function download() {
+        var blob = new Blob([srcDoc])
+        console.log(srcDoc)
+        FileSaver.saveAs(blob, "index.html")
+    }
 
     function getEditor() {
         if (tabIndex === 0) {
@@ -54,26 +83,39 @@ btn.addEventListener('click', () => {
         }
     }
 
-
     return (
         <>
             <div className="top-section">
                 <nav>
-                    <NavBtn 
-                        btnIndex={0} 
-                        tabIndex={tabIndex} 
-                        setTabIndex={setTabIndex}
-                    >HTML</NavBtn>
-                    <NavBtn 
-                        btnIndex={1} 
-                        tabIndex={tabIndex} 
-                        setTabIndex={setTabIndex}
-                    >CSS</NavBtn>
-                    <NavBtn 
-                        btnIndex={2} 
-                        tabIndex={tabIndex} 
-                        setTabIndex={setTabIndex}
-                    >JAVASCRIPT</NavBtn>
+                    <div className="nav-btns">
+                        <NavBtn 
+                            btnIndex={0} 
+                            tabIndex={tabIndex} 
+                            setTabIndex={setTabIndex}
+                        >HTML</NavBtn>
+                        <NavBtn 
+                            btnIndex={1} 
+                            tabIndex={tabIndex} 
+                            setTabIndex={setTabIndex}
+                        >CSS</NavBtn>
+                        <NavBtn 
+                            btnIndex={2} 
+                            tabIndex={tabIndex} 
+                            setTabIndex={setTabIndex}
+                        >JAVASCRIPT</NavBtn>
+                    </div>
+
+                    <div className="control-btns">
+                        <button 
+                            className="reload-btn"
+                            onClick={updateEditor}
+                        >Reload</button>
+                        <button 
+                            className="download-btn"
+                            onClick={download}
+                        >Download</button>
+                    </div>
+
                 </nav>
 
                 {getEditor()}
@@ -81,27 +123,7 @@ btn.addEventListener('click', () => {
             <iframe
                 title="document"
                 className="document"
-                srcDoc={`
-                    <!DOCTYPE html>
-                    <html lang="en">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Document</title>
-                        <style>
-                            ${css}
-                        </style>
-                    </head>
-                    <body>
-
-                        ${html}
-
-                        <script>
-                            ${js}
-                        </script>
-                    </body>
-                    </html>
-                `}
+                srcDoc={srcDoc}
             />
         </>
     )
