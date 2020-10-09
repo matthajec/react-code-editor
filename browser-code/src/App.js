@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import FileSaver, { saveAs } from 'file-saver'
+import FileSaver from 'file-saver'
 
 import Editor from './components/Editor'
 import NavBtn from './components/NavBtn'
