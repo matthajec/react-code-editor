@@ -3,7 +3,6 @@
     padding: 0;
     box-sizing: border-box;
     font-family: Roboto, Arial, Helvetica, sans-serif;
-    font-weight: bold;
     letter-spacing: .2em;
 }
 
@@ -15,14 +14,14 @@
 }
 
 .top-section {
-    background-color: #217cc7;
-    padding: 15px;
+    background-color:#0f1416;
 }
 
 nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    font-weight: bold;
 }
 
 .editor-selector,
@@ -37,9 +36,7 @@ nav {
 .editor-selector {
     padding: .75rem 2rem;
     border-bottom: 1px solid rgba(0,0,0, 0);
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-    transform: translateY(1px);
+
 }
 
 .control-btns * {
