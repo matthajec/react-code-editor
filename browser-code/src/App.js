@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import FileSaver from 'file-saver'
+import {Link, Switch, Route , useLocation} from 'react-router-dom'
 
 import Editor from './components/Editor'
-import NavBtn from './components/NavBtn'
-
 
 export default function App() {
+
+    const {pathname} = useLocation()
 
     const [ html, setHTML ] = useState('')
     const [ css, setCSS ] = useState('')
     const [ js, setJS ] = useState('')
-    const [ tabIndex, setTabIndex ] = useState(0)
     const [ srcDoc, setSrcDoc ] = useState(``)
 
     useEffect(() => {
@@ -55,54 +55,23 @@ export default function App() {
         FileSaver.saveAs(blob, "index.html")
     }
 
-    function getEditor() {
-        if (tabIndex === 0) {
-            return (
-                <Editor 
-                    language="xml"
-                    value={html}
-                    onChange={setHTML}
-                />
-            )
-        } else if (tabIndex === 1) {
-            return (
-                <Editor 
-                    language="css"
-                    value={css}
-                    onChange={setCSS}
-                />
-            )
-        } else if (tabIndex === 2) {
-            return (
-                <Editor 
-                    language="javascript"
-                    value={js}
-                    onChange={setJS}
-                />
-            )
-        }
-    }
-
     return (
         <>
             <div className="top-section">
                 <nav>
                     <div className="nav-btns">
-                        <NavBtn 
-                            btnIndex={0} 
-                            tabIndex={tabIndex} 
-                            setTabIndex={setTabIndex}
-                        >HTML</NavBtn>
-                        <NavBtn 
-                            btnIndex={1} 
-                            tabIndex={tabIndex} 
-                            setTabIndex={setTabIndex}
-                        >CSS</NavBtn>
-                        <NavBtn 
-                            btnIndex={2} 
-                            tabIndex={tabIndex} 
-                            setTabIndex={setTabIndex}
-                        >JAVASCRIPT</NavBtn>
+                        <Link 
+                            to="/"
+                            className={`editor-selector ${pathname === '/' && 'selected'}`}
+                        >HTML</Link>
+                        <Link 
+                            to="/css"
+                            className={`editor-selector ${pathname === '/css' && 'selected'}`}
+                        >CSS</Link>
+                        <Link 
+                            to="/javascript"
+                            className={`editor-selector ${pathname === '/javascript' && 'selected'}`}
+                        >JAVASCRIPT</Link>
                     </div>
 
                     <div className="control-btns">
@@ -110,6 +79,7 @@ export default function App() {
                             className="reload-btn"
                             onClick={updateEditor}
                         >Reload</button>
+
                         <button 
                             className="download-btn"
                             onClick={download}
@@ -118,7 +88,29 @@ export default function App() {
 
                 </nav>
 
-                {getEditor()}
+                <Switch>
+                    <Route exact path="/">                
+                        <Editor 
+                            language="html"
+                            value={html}
+                            onChange={setHTML}
+                        />
+                    </Route>
+                    <Route exact path="/css">                
+                        <Editor 
+                            language="css"
+                            value={css}
+                            onChange={setCSS}
+                        />
+                    </Route>
+                    <Route exact path="/javascript">                
+                        <Editor 
+                            language="javascript"
+                            value={js}
+                            onChange={setJS}
+                        />
+                    </Route>
+                </Switch>
             </div>
             <iframe
                 title="document"
