@@ -3,6 +3,7 @@ import FileSaver from 'file-saver'
 import {Link, Switch, Route , useLocation} from 'react-router-dom'
 
 import Editor from './components/Editor'
+import Loading from './components/Loading'
 
 export default function App() {
 
@@ -12,6 +13,7 @@ export default function App() {
     const [ css, setCSS ] = useState('')
     const [ js, setJS ] = useState('')
     const [ srcDoc, setSrcDoc ] = useState(``)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const localHtml = localStorage.getItem('html')
@@ -21,6 +23,7 @@ export default function App() {
         setHTML(localHtml ? localHtml : '') 
         setCSS(localCss ? localCss : '') 
         setJS(localJs ? localJs : '') 
+        updateEditor()
 
     }, [])
 
@@ -31,28 +34,33 @@ export default function App() {
     }, [ html, css, js ])
 
     function updateEditor() {
-        setSrcDoc(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Document</title>
-            <style>
-                ${css}
-            </style>
-        </head>
-        <body>
+        setLoading(true)
+        setTimeout(() => {
+            setLoading()
+            setSrcDoc(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Document</title>
+                <style>
+                    ${css}
+                </style>
+            </head>
+            <body>
 
-            ${html}
+                ${html}
 
-            <script>
-                ${js}
-            </script>
-        </body>
-        </html>
-    `)
+                <script>
+                    ${js}
+                </script>
+            </body>
+            </html>
+            `)}, 400
+        )
     }
+
 
     function download() {
         if(html || css | js) {
@@ -119,11 +127,15 @@ export default function App() {
                     </Route>
                 </Switch>
             </div>
-            <iframe
+            {loading ?
+                <Loading /> :
+                <iframe
                 title="document"
                 className="document"
                 srcDoc={srcDoc}
             />
+            }
+
         </>
     )
 }
