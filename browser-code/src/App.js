@@ -14,9 +14,14 @@ export default function App() {
     const [ srcDoc, setSrcDoc ] = useState(``)
 
     useEffect(() => {
-        setHTML(localStorage.getItem('html'))
-        setCSS(localStorage.getItem('css'))
-        setJS(localStorage.getItem('js'))
+        const localHtml = localStorage.getItem('html')
+        const localCss = localStorage.getItem('css')
+        const localJs = localStorage.getItem('js')
+
+        setHTML(localHtml ? localHtml : '') 
+        setCSS(localCss ? localCss : '') 
+        setJS(localJs ? localJs : '') 
+
     }, [])
 
     useEffect(() => {
@@ -50,9 +55,11 @@ export default function App() {
     }
 
     function download() {
-        var blob = new Blob([srcDoc])
-        console.log(srcDoc)
-        FileSaver.saveAs(blob, "index.html")
+        if(html || css | js) {
+            var blob = new Blob([srcDoc])
+            console.log(srcDoc)
+            FileSaver.saveAs(blob, "index.html")
+        }
     }
 
     return (
